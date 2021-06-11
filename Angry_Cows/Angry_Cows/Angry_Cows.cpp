@@ -51,6 +51,7 @@ int main()
 
 	}
 	outfile << maximum;
-	outfile.close();
+	outfile.close(); 
+	//dgfdadd
 
 }
