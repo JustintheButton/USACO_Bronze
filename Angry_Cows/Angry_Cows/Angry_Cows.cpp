@@ -4,20 +4,34 @@
 #include <cmath>
 using namespace std;
 
-void calculateExplosion(vector<int>& unexploded, vector<int>& exploded, int& blastradius) {
-	int permutationTest;
-	int blastRadiusBefore = exploded.size();
-	for (int checkExplosion = 0; checkExplosion < exploded.size(); checkExplosion++) {
-		for (permutationTest = 0; permutationTest < unexploded.size(); permutationTest++) {
-			if (abs(exploded[checkExplosion] - unexploded[permutationTest]) <= blastradius) {
-				exploded.push_back(unexploded[permutationTest]);
-				unexploded[permutationTest] = numeric_limits<int>::max();
+size_t calculateExplosion(
+	const vector<int>& unexploded_in, 
+	int start_pos) 
+{
+	vector<int> exploded;
+	std::vector<int> unexploded = unexploded_in;
+	unexploded[start_pos] = numeric_limits<int>::max();
+	int blastradius = 1;
+	int exploded_size_old = exploded.size();
+	vector<int> identified(1, unexploded_in[start_pos]);
+
+	do {
+		exploded_size_old = exploded.size();
+		std::vector<int> identified_this_round;
+		for (int checkExplosion = 0; checkExplosion < identified.size(); checkExplosion++) {
+			for (int permutationTest = 0; permutationTest < unexploded.size(); permutationTest++) {
+				if (abs(identified[checkExplosion] - unexploded[permutationTest]) <= blastradius) {
+					identified_this_round.push_back(unexploded[permutationTest]);
+					unexploded[permutationTest] = numeric_limits<int>::max();
+				}
 			}
 		}
-	}
-	if (blastRadiusBefore < exploded.size()) {
+		exploded.insert(exploded.end(), identified.begin(), identified.end());
+		identified = identified_this_round;
 		blastradius++;
-	}
+	} while (exploded_size_old != exploded.size());
+
+	return exploded.size();
 }
 int main()
 {
@@ -32,32 +46,16 @@ int main()
 	int nums;
 	infile >> nums;
 	vector<int> haybales(nums);
-	vector<int> resetHaybales(nums);
-	vector<int> exploded(0);
 	
 	for (int readNumber = 0; readNumber < nums; readNumber++) {
 		infile >> haybales[readNumber];
-		resetHaybales[readNumber] = haybales[readNumber];
 	}
 	for (int test = 0; test < nums; test++) {
-		exploded.push_back(haybales[test]);		
-		haybales[test] = numeric_limits<int>::max();
-		for (int i = 0; i < nums; i++) {
-			calculateExplosion(haybales, exploded, blastradius);
-		}
-		int progress = exploded.size();
-		
+		int progress = calculateExplosion(haybales, test);
 		if (progress >= maximum) {
-			maximum = exploded.size();
-			maxNumber = resetHaybales[test];
+			maximum = progress;
+			maxNumber = haybales[test];
 		}
-		for (int readNumber = 0; readNumber < nums; readNumber++) {
-			haybales[readNumber] = resetHaybales[readNumber];
-		}
-		exploded.clear();
-		blastradius = 1;
-		progress = 0;
-
 	}
 
 	outfile << maximum;
