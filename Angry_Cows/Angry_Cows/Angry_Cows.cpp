@@ -18,11 +18,11 @@ size_t calculateExplosion(
 	do {
 		exploded_size_old = exploded.size();
 		std::vector<int> identified_this_round;
-		for (int checkExplosion = 0; checkExplosion < identified.size(); checkExplosion++) {
-			for (int permutationTest = 0; permutationTest < unexploded.size(); permutationTest++) {
-				if (abs(identified[checkExplosion] - unexploded[permutationTest]) <= blastradius) {
-					identified_this_round.push_back(unexploded[permutationTest]);
-					unexploded[permutationTest] = numeric_limits<int>::max();
+		for (int an_identified_value : identified) {
+			for (int& an_unexploded : unexploded) {
+				if (abs(an_identified_value - an_unexploded) <= blastradius) {
+					identified_this_round.push_back(an_unexploded);
+					an_unexploded = numeric_limits<int>::max();
 				}
 			}
 		}
