@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <list>
+#include <set>
 #include <cmath>
 using namespace std;
 
@@ -8,25 +10,27 @@ size_t calculateExplosion(
 	const vector<int>& unexploded_in, 
 	int start_pos) 
 {
-	vector<int> exploded;
-	std::vector<int> unexploded = unexploded_in;
-	unexploded[start_pos] = numeric_limits<int>::max();
+	set<int> exploded;
+	std::vector<int> status = unexploded_in;
+	status[start_pos] = -1;
 	int blastradius = 1;
 	int exploded_size_old = exploded.size();
-	vector<int> identified(1, unexploded_in[start_pos]);
+	list<int> identified(1, unexploded_in[start_pos]);
 
 	do {
 		exploded_size_old = exploded.size();
-		std::vector<int> identified_this_round;
+		std::list<int> identified_this_round;
 		for (int an_identified_value : identified) {
-			for (int& an_unexploded : unexploded) {
-				if (abs(an_identified_value - an_unexploded) <= blastradius) {
-					identified_this_round.push_back(an_unexploded);
-					an_unexploded = numeric_limits<int>::max();
+			for (int& an_unexploded : status) {
+				if (an_unexploded != -1) {
+					if (abs(an_identified_value - an_unexploded) <= blastradius) {
+						identified_this_round.push_back(an_unexploded);
+						an_unexploded = -1;
+					}
 				}
 			}
 		}
-		exploded.insert(exploded.end(), identified.begin(), identified.end());
+		exploded.insert(identified.begin(), identified.end());
 		identified = identified_this_round;
 		blastradius++;
 	} while (exploded_size_old != exploded.size());
