@@ -43,7 +43,7 @@ int main()
 	int maximum = 0;
 	ifstream infile;
 	ofstream outfile;
-	infile.open("5.in");
+	infile.open("angry.in");
 	outfile.open("angry.out");
 	int blastradius = 1;
 	
