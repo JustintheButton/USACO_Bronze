@@ -4,13 +4,15 @@
 #include <cmath>
 #include <set>
 #include <algorithm>
+#include <list>
+#include <iterator>
 
 using namespace std;
 int main()
 {
 	ifstream infile;
 	ofstream outfile;
-	infile.open("2.in");
+	infile.open("balancing.in");
 	outfile.open("balancing.out");
 	int numberOfCows;
 	int maximumValues;
@@ -23,17 +25,24 @@ int main()
 		infile >> x[readingIn] >> y[readingIn];
 	}
 
-	int a;
-	int b;
 	int c = 0;
 	int d = 0;
 	int temp[4] = {0,0,0,0};
-	set<int> xvales;
-	set<int> yvales;
-	xvales.insert(x.begin(), x.end());
-	yvales.insert(y.begin(), y.end());
-	for (b = x[c] + 1; b < maximumValues; b) {
-		for (a = y[c]+1; a < maximumValues; a) {
+	set<int> xyvalues[2];
+	xyvalues[0].insert(x.begin(), x.end());
+	xyvalues[1].insert(y.begin(), y.end());
+	list<int> div[2];
+	for (int iset = 0; iset < 2; iset++) {
+		for (auto iter = xyvalues[iset].begin(); iter != xyvalues[iset].end(); iter++) {
+			int this_value = *iter;
+			auto next_iter = std::next(iter, 1);
+			if (next_iter == xyvalues[iset].end())
+				break;
+			div[iset].push_back((this_value + *next_iter) / 2);
+		}
+	}
+	for (int b : div[0]) {
+		for (int a : div[1]) {
 			for (int xtracker = 0; xtracker < numberOfCows; xtracker++) {
 				int xval = x[xtracker];
 				int yval = y[xtracker];
@@ -63,13 +72,6 @@ int main()
 			for (int i = 0; i < 4; i++) {
 				temp[i] = 0;
 			}
-			if (c == numberOfCows-1 || d == numberOfCows-1) {
-				break;
-			}
-			c++;
-			d++;
-			a = y[d] + 1;
-			b = x[c] + 1;
 		}
 	}
 	////create new vector which has only one division between two consecutive possible a so it doesn't 
