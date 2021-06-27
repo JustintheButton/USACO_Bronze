@@ -35,6 +35,7 @@ vector<vector<char>> subString(const vector<vector<char>> &piece) {
     }
     return returnVector;
 }
+
 bool singleMatch(
     vector<vector<char>>& target,
     const vector<vector<char>>& piece1)
@@ -43,21 +44,19 @@ bool singleMatch(
     bool foundMatch = false;
     int matchingShiftx = -1;
     int matchingShifty = -1;
+    auto is_right_shift = [&](int shiftx, int shifty) {
+        for (int compactx = 0; compactx < compactString.size(); compactx++) {
+            for (int compacty = 0; compacty < compactString[compactx].size(); compacty++) {
+                if (compactString[compactx][compacty] != target[compactx + shiftx][compacty + shifty] &&
+                    compactString[compactx][compacty] == '#')
+                    return false;
+            }
+        }
+        return true;    
+    };
     for (int shiftx = 0; shiftx < target.size() - compactString.size() + 1; shiftx++) {
         for (int shifty = 0; shifty < target[0].size() - compactString[0].size() + 1; shifty++) {
-            bool isRightShift = true;
-            for (int compactx = 0; compactx < compactString.size(); compactx++) {
-                for (int compacty = 0; compacty < compactString[compactx].size(); compacty++) {
-                    if (compactString[compactx][compacty] != target[compactx + shiftx][compacty + shifty] &&
-                        compactString[compactx][compacty] == '#') {
-                        isRightShift = false;
-                        break;
-                    }
-                }
-                if (isRightShift == false) {
-                    break;
-                }
-            }
+            bool isRightShift = is_right_shift(shiftx, shifty);
             if (isRightShift == true) {
                 foundMatch = true;
                 matchingShiftx = shiftx;
