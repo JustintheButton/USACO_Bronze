@@ -104,7 +104,6 @@ int main()
     vector<char> temp(n);
     vector<vector<char>> original(n, temp);
     vector< vector< vector<char> > > pieces(k, vector< vector<char> >(n, vector<char>(n)));
-
     for (int assigningOriginalArrayx = 0; assigningOriginalArrayx < n; assigningOriginalArrayx++) {
         for (int assigningOrigianlArrayy = 0; assigningOrigianlArrayy < n; assigningOrigianlArrayy++) {
             infile >> original[assigningOriginalArrayx][assigningOrigianlArrayy];
