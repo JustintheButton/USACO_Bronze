@@ -69,8 +69,6 @@ int main()
             farthestValue = findMaxValue(cows);
             flip(cows, farthestValue);
             finishedTipping = isDone(cows);
-            
-
         } while (finishedTipping == false);
     }
     outfile << ans;
